@@ -42,6 +42,7 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     
     func configurationUI() {
         initView()
+        
         //startNextPageLoop()
     }
     
