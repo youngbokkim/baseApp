@@ -15,10 +15,12 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     var viewModel: ViewModelType!
     var disposeBag: DisposeBag = DisposeBag()
     
-    private let CELL_WIDTH = 250.0
-    private let CELL_HEIGHT = 330.0
+    private let constCellWidth = 250.0
+    private let constCellHeight = 330.0
     private var currentIndex: CGFloat = 0.0
     private let lineSpacing: CGFloat = 0.0
+    private var timerPause: Bool = false
+    private var timer: Timer?
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -43,7 +45,7 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     func configurationUI() {
         initView()
         
-        //startNextPageLoop()
+        startNextPageLoop()
     }
     
     func bindInput() -> ViewModelType.Input {
@@ -83,14 +85,25 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cellWidth = CELL_WIDTH
-        let cellHeight = CELL_HEIGHT
+        let cellWidth = constCellWidth
+        let cellHeight = constCellHeight
         return CGSize(width: cellWidth, height: cellHeight)
     }
 }
 
 
 extension HomeViewController : UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.timer?.invalidate()
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
+            fetchHisData.accept(Int(currentIndex))
+        }
+        cellSelect.accept(Int(currentIndex))
+        startNextPageLoop()
+    }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
     {
@@ -118,17 +131,14 @@ extension HomeViewController : UIScrollViewDelegate {
         
         offset = CGPoint(x: roundedIndex * cellWidthIncludingSpacing - scrollView.contentInset.left, y: -scrollView.contentInset.top)
         targetContentOffset.pointee = offset
-        
-        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
-            fetchHisData.accept(Int(currentIndex))
-        }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //let indexPath =  IndexPath(item: Int(self.currentIndex), section: 0)
-        
-        //self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
+            fetchHisData.accept(Int(currentIndex))
+        }
         cellSelect.accept(Int(currentIndex))
+        startNextPageLoop()
     }
 }
 
@@ -141,8 +151,8 @@ fileprivate extension HomeViewController {
         self.navigationController?.navigationBar.standardAppearance = appearance
         self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
-        let cellWidth = CELL_WIDTH
-        let cellHeight = CELL_HEIGHT
+        let cellWidth = constCellWidth
+        let cellHeight = constCellHeight
         let insetX = (view.bounds.width - cellWidth) / 2.0
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
@@ -154,7 +164,7 @@ fileprivate extension HomeViewController {
     }
     
     func startNextPageLoop() {
-        let _ = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
             self.moveNextPage()
         }
     }
@@ -162,5 +172,6 @@ fileprivate extension HomeViewController {
     func moveNextPage() {
         currentIndex += 1
         collectionView.scrollToItem(at: NSIndexPath(item: Int(currentIndex), section: 0) as IndexPath, at: .right, animated: true)
+        cellSelect.accept(Int(currentIndex))
     }
 }

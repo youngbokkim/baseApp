@@ -55,11 +55,11 @@
                                                                     </constraints>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Brain" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jf1-U1-RDq">
-                                                                    <rect key="frame" x="63" y="8" width="167" height="40"/>
+                                                                    <rect key="frame" x="63" y="8" width="152" height="40"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="40" id="crA-1U-v0S"/>
                                                                     </constraints>
-                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
@@ -98,7 +98,7 @@
                                                                 <constraint firstItem="ZoT-9f-jkB" firstAttribute="top" secondItem="jf1-U1-RDq" secondAttribute="bottom" constant="2" id="3y9-aX-abL"/>
                                                                 <constraint firstItem="MLc-cm-9y4" firstAttribute="leading" secondItem="YfZ-lL-zIT" secondAttribute="leading" constant="8" id="FWu-jt-UMf"/>
                                                                 <constraint firstItem="jf1-U1-RDq" firstAttribute="leading" secondItem="MLc-cm-9y4" secondAttribute="trailing" constant="15" id="ZCF-JU-rUO"/>
-                                                                <constraint firstAttribute="trailing" secondItem="jf1-U1-RDq" secondAttribute="trailing" id="l5o-5a-Tfy"/>
+                                                                <constraint firstAttribute="trailing" secondItem="jf1-U1-RDq" secondAttribute="trailing" constant="15" id="l5o-5a-Tfy"/>
                                                                 <constraint firstItem="ZoT-9f-jkB" firstAttribute="leading" secondItem="YfZ-lL-zIT" secondAttribute="leading" id="mSY-kh-Pbj"/>
                                                                 <constraint firstItem="MLc-cm-9y4" firstAttribute="top" secondItem="YfZ-lL-zIT" secondAttribute="top" constant="8" id="r9G-nz-RDb"/>
                                                                 <constraint firstAttribute="bottom" secondItem="ZoT-9f-jkB" secondAttribute="bottom" constant="5" id="thr-ZY-fdV"/>
