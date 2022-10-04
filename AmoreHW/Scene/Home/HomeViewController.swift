@@ -66,6 +66,11 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
             }
         }.disposed(by: disposeBag)
         
+        output.errorHandler.asObservable().bind(onNext: { error in
+            print("error = \(error)")
+            self.showErrorMsg(error: error)
+        }).disposed(by: disposeBag)
+        
        _ = output.hitsInfo.bind { hit in
             self.titleLabel.text = "\(hit.type)"
             self.subTitleLabel.text = "\(hit.tags)"
@@ -98,11 +103,7 @@ extension HomeViewController : UIScrollViewDelegate {
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
-            fetchHisData.accept(Int(currentIndex))
-        }
-        cellSelect.accept(Int(currentIndex))
-        startNextPageLoop()
+        cellUpdate()
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
@@ -134,11 +135,7 @@ extension HomeViewController : UIScrollViewDelegate {
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
-            fetchHisData.accept(Int(currentIndex))
-        }
-        cellSelect.accept(Int(currentIndex))
-        startNextPageLoop()
+        cellUpdate()
     }
 }
 
@@ -164,14 +161,33 @@ fileprivate extension HomeViewController {
     }
     
     func startNextPageLoop() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
             self.moveNextPage()
         }
     }
     
     func moveNextPage() {
+        print("idx = \(currentIndex) max = \(viewModel.getMaxLength())")
+        
+        guard viewModel.getMaxLength() > Int(currentIndex) else { return }
         currentIndex += 1
         collectionView.scrollToItem(at: NSIndexPath(item: Int(currentIndex), section: 0) as IndexPath, at: .right, animated: true)
         cellSelect.accept(Int(currentIndex))
+    }
+    
+    func cellUpdate(){
+        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
+            fetchHisData.accept(viewModel.getMaxLength() + 1)
+        } else {
+            cellSelect.accept(Int(currentIndex))
+        }
+        startNextPageLoop()
+    }
+    
+    func showErrorMsg(error: Error) {
+        let vc = UIAlertController.init(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        let confirm = UIAlertAction.init(title: "확인", style: .cancel)
+        vc.addAction(confirm)
+        self.present(vc, animated: true)
     }
 }

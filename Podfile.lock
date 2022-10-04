@@ -1,5 +1,4 @@
 PODS:
-  - Differentiator (5.0.0)
   - Reusable (4.1.2):
     - Reusable/Storyboard (= 4.1.2)
     - Reusable/View (= 4.1.2)
@@ -8,10 +7,6 @@ PODS:
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
-  - RxDataSources (5.0.0):
-    - Differentiator (~> 5.0)
-    - RxCocoa (~> 6.0)
-    - RxSwift (~> 6.0)
   - RxFlow (2.13.0):
     - RxCocoa (>= 6.0.0)
     - RxSwift (>= 6.0.0)
@@ -22,29 +17,24 @@ PODS:
 DEPENDENCIES:
   - Reusable
   - RxCocoa
-  - RxDataSources
   - RxFlow
   - RxSwift
 
 SPEC REPOS:
   trunk:
-    - Differentiator
     - Reusable
     - RxCocoa
-    - RxDataSources
     - RxFlow
     - RxRelay
     - RxSwift
 
 SPEC CHECKSUMS:
-  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
-  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxFlow: 52f6f6379918392c1ea8cb62d8dcf2df9a5463dd
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
 
-PODFILE CHECKSUM: 484fb30d0cbfdb63edf78f240f961205d52a14a8
+PODFILE CHECKSUM: 05a50508880831cf73f6920bba04e7331f7b424a
 
 COCOAPODS: 1.11.2

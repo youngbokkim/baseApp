@@ -33,7 +33,8 @@ final class HomeViewModel: ViewModelBase, Stepper {
     
     struct Output {
         let dataSource: Driver<[Hit]>
-        let hitsInfo = PublishRelay<Hit>()
+        let hitsInfo:PublishRelay<Hit>
+        let errorHandler: Driver<Error>
     }
     
     func transform(input: Input) -> Output {
@@ -59,7 +60,9 @@ final class HomeViewModel: ViewModelBase, Stepper {
                 }
             }
         
-        let output = Output(dataSource: dataSource.asDriverComplete())
+        let hitsInfo = PublishRelay<Hit>()
+        
+        let output = Output(dataSource: dataSource.asDriverComplete(),hitsInfo: hitsInfo, errorHandler: errorHandler.asDriverComplete())
         
         _ = input.cellSelect
             .subscribe {[weak self] page in

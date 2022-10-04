@@ -7,7 +7,6 @@ target 'AmoreHW' do
 
   pod 'RxSwift'
   pod 'RxCocoa'
-  pod 'RxDataSources'
   pod 'RxFlow'
   pod 'Reusable'
 

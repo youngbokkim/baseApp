@@ -2,7 +2,7 @@
 //  HomeDetailViewController.swift
 //  AmoreHW
 //
-//  Created by N4158 on 2022/10/04.
+//  Created by kim youngbok on 2022/10/04.
 //
 
 import UIKit

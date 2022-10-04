@@ -32,6 +32,10 @@ class HomeCollectionViewCell: UICollectionViewCell {
         isSelected = false
         disposeBag = DisposeBag()
     }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 }
 
 fileprivate extension HomeCollectionViewCell {
