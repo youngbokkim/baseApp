@@ -7,18 +7,18 @@
 
 import RxSwift
 
-protocol ViewModelBase: CellViewModelBase {
+protocol ViewModelBase {
     associatedtype Input
     associatedtype Output
     var disposeBag: DisposeBag { get }
     func transform(input: Input) -> Output
 }
 
-protocol CellViewModelBase {
+protocol ImageLoadViewModelBase {
     func saveKeyPath(rootKey: String, url: URL) -> String
 }
 
-extension CellViewModelBase {
+extension ImageLoadViewModelBase {
     func saveKeyPath(rootKey: String, url: URL) -> String {
         let subPath = url.pathComponents
             .filter{ $0.contains("-") }

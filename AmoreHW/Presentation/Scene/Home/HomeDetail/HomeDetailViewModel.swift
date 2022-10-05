@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 import RxFlow
 
-final class HomeDetailViewModel: ViewModelBase, Stepper {
+final class HomeDetailViewModel: ViewModelBase, ImageLoadViewModelBase, Stepper {
     let title: String
     private var hitInfo: Hit
     let disposeBag: DisposeBag = DisposeBag()

@@ -14,7 +14,7 @@ enum updateType {
     case deSelect
 }
 
-final class HomeCollectionViewCellViewModel: CellViewModelBase {
+final class HomeCollectionViewCellViewModel: ImageLoadViewModelBase {
     private let idx: Int
     private let hitInfo: Hit
     private let updateCell: Observable<Int>
