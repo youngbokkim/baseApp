@@ -7,15 +7,11 @@
 
 import RxSwift
 
-protocol ViewModelBase {
+protocol ViewModelBase: CellViewModelBase {
     associatedtype Input
     associatedtype Output
     var disposeBag: DisposeBag { get }
     func transform(input: Input) -> Output
-}
-
-protocol ResultViewModelBase {
-    init(info: Hit)
 }
 
 protocol CellViewModelBase {

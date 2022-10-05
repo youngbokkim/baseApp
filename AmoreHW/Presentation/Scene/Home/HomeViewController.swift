@@ -27,7 +27,7 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     @IBOutlet weak var subTitleLabel: UILabel!
     
     private let viewLoad: PublishRelay<Void> = PublishRelay()
-    private let fetchHisData: PublishRelay<Int> = PublishRelay()
+    private let fetchedHitsData: PublishRelay<Int> = PublishRelay()
     private let cellSelect: PublishRelay<Int> = PublishRelay()
     private let goDetail: PublishRelay<Hit> = PublishRelay()
     
@@ -45,14 +45,21 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupCommon()
-        fetchHisData.accept(Int(1))
+        fetchedHitsData.accept(Int(1))
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        cellUpdate()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        timer?.invalidate()
+    }
+
     func configurationUI() {
         initView()
         startNextPageLoop()
@@ -60,7 +67,7 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     
     func bindInput() -> ViewModelType.Input {
         return ViewModelType.Input(viewLoad: viewLoad.asObservable(),
-                                   fetchedHisData: fetchHisData.asObservable(),
+                                   fetchedHitsData: fetchedHitsData.asObservable(),
                                    cellSelect: cellSelect.asObservable(),
                                    goDetail: goDetail.asObservable())
     }
@@ -70,7 +77,9 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
         output.dataSource.asObservable().bind(to: collectionView.rx
             .items(cellIdentifier: "HomeCollectionViewCell",
                    cellType: HomeCollectionViewCell.self)) { index, data, cell in
+            
             cell.viewModel = HomeCollectionViewCellViewModel(idx: index, hitInfo: data, updateCell: self.cellSelect.asObservable())
+            
             if index == 0 && self.currentIndex == 0 {
                 self.cellSelect.accept(0)
             }
@@ -106,7 +115,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
 extension HomeViewController : UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         timer?.invalidate()
@@ -116,8 +124,7 @@ extension HomeViewController : UIScrollViewDelegate {
         cellUpdate()
     }
     
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
-    {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
         var offset = targetContentOffset.pointee
@@ -177,15 +184,20 @@ fileprivate extension HomeViewController {
     }
     
     func moveNextPage() {
-        guard viewModel.getMaxLength() > Int(currentIndex) else { return }
+        guard viewModel.getMaxLength() > Int(currentIndex)
+        else { return }
+        
         currentIndex += 1
         collectionView.scrollToItem(at: NSIndexPath(item: Int(currentIndex), section: 0) as IndexPath, at: .right, animated: true)
     }
     
     func cellUpdate(){
+        guard viewModel.getMaxLength() > Int(currentIndex)
+        else { return }
+        
         if viewModel.getMaxLength() == Int(currentIndex + 1) {
             activityIndicator.startAnimating()
-            fetchHisData.accept(viewModel.getMaxLength() + 1)
+            fetchedHitsData.accept(viewModel.getMaxLength() + 1)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 self?.cellSelect.accept(Int(self!.currentIndex))
             }

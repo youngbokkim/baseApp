@@ -170,11 +170,10 @@
 		64F9201C28E182B0007B7ABF /* AmoreHW */ = {
 			isa = PBXGroup;
 			children = (
-				7E796A9228E5875500C772AF /* Domain */,
-				7E796A8628E5865F00C772AF /* Data */,
 				7EA79B1528E40EB3001133AE /* Application */,
 				7EA79B1628E40EE0001133AE /* Presentation */,
-				7EA79B0E28E40DD5001133AE /* Scene */,
+				7E796A9228E5875500C772AF /* Domain */,
+				7E796A8628E5865F00C772AF /* Data */,
 				7E796A8328E583D700C772AF /* Extension */,
 				7E4C00DE28E6A21E00B3C0BD /* Util */,
 				64F9202628E182B6007B7ABF /* Assets.xcassets */,
@@ -339,8 +338,9 @@
 		7EA79B1628E40EE0001133AE /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				7EA79B1728E40EF0001133AE /* Base */,
 				7EA79B0528E40AC3001133AE /* Flow */,
+				7EA79B1728E40EF0001133AE /* Base */,
+				7EA79B0E28E40DD5001133AE /* Scene */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";

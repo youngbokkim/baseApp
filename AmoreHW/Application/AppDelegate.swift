@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let disposedBag = DisposeBag()
     var coordinator = FlowCoordinator()
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         self.window = UIWindow()

@@ -12,9 +12,10 @@ class SearchFlow: Flow {
     var root: Presentable {
         return rootViewController
     }
+    
     private lazy var rootViewController: UINavigationController = {
         let viewController = UINavigationController()
-        viewController.navigationBar.prefersLargeTitles = true
+        viewController.navigationBar.prefersLargeTitles = false
         return viewController
     }()
     
@@ -31,6 +32,7 @@ class SearchFlow: Flow {
             return .none
         }
     }
+    
     private func navigateToSearch() -> FlowContributors {
         let viewModel = SearchViewModel(title: "검색")
         let viewController = SearchViewController.instantiate(withViewModel: viewModel)

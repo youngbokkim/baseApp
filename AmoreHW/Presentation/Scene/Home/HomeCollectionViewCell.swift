@@ -39,7 +39,6 @@ class HomeCollectionViewCell: UICollectionViewCell {
 }
 
 fileprivate extension HomeCollectionViewCell {
-
     func configurationUI() {
         baseView.layer.cornerRadius = 10.0
         baseView.layer.borderWidth = 1.0

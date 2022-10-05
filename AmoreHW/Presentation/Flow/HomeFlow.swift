@@ -12,6 +12,7 @@ class HomeFlow: Flow {
     var root: Presentable {
         return rootViewController
     }
+    
     private lazy var rootViewController: UINavigationController = {
         let viewController = UINavigationController()
         return viewController

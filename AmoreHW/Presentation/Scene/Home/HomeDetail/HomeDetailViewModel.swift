@@ -24,15 +24,29 @@ final class HomeDetailViewModel: ViewModelBase, Stepper {
     }
     
     struct Input {
-
+        let viewLoad: Observable<Void>
     }
     
     struct Output {
-       
+        let hitInfo: PublishRelay<Hit>
     }
     
     func transform(input: Input) -> Output {
-        let output = Output()
+        let hitInfo = PublishRelay<Hit>()
+        let output = Output(hitInfo: hitInfo)
+        
+        input.viewLoad.subscribe { _ in
+            output.hitInfo.accept(self.hitInfo)
+        }.disposed(by: disposeBag)
+        
         return output
+    }
+    
+    var webFormatUrl: URL? {
+        return URL(string: hitInfo.webformatURL)
+    }
+    
+    func imageKeyPath(url: URL) -> String {
+        return saveKeyPath(rootKey: hitInfo.rootKey(), url: url)
     }
 }

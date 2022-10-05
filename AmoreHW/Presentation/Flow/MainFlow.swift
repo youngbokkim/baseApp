@@ -44,7 +44,6 @@ class MainFlow: Flow {
                   searchFlow,
                   when: .created) { [unowned self] ( home : UINavigationController,
                                                      search : UINavigationController) in
-            
             let homeItem = UITabBarItem(title: "홈",
                                          image: UIImage(named: "today"),
                                          selectedImage: nil)
@@ -52,13 +51,10 @@ class MainFlow: Flow {
             let searchItem = UITabBarItem(title: "검색",
                                           image: UIImage(named: "search"),
                                           selectedImage: nil)
-            
             home.tabBarItem = homeItem
             search.tabBarItem = searchItem
-
             rootViewController.setViewControllers([home, search],
                                                   animated: false)
-            
         }
         
         return .multiple(flowContributors: [.contribute(withNextPresentable: homeFlow,

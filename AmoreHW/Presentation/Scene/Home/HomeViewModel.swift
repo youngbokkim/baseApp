@@ -26,14 +26,14 @@ final class HomeViewModel: ViewModelBase, Stepper {
     
     struct Input {
         let viewLoad: Observable<Void>
-        let fetchedHisData: Observable<Int>
+        let fetchedHitsData: Observable<Int>
         let cellSelect: Observable<Int>
         let goDetail: Observable<Hit>
     }
     
     struct Output {
         let dataSource: Driver<[Hit]>
-        let hitsInfo:PublishRelay<Hit>
+        let hitsInfo: PublishRelay<Hit>
         let errorHandler: Driver<Error>
     }
     
@@ -42,7 +42,7 @@ final class HomeViewModel: ViewModelBase, Stepper {
             self?.steps.accept(AppStep.appHomeDetail(info: hit))
         }.disposed(by: disposeBag)
         
-        let dataSource = input.fetchedHisData
+        let dataSource = input.fetchedHitsData
             .flatMap { [weak self] page -> Observable<Result<[Hit],Error>> in
                 self?.useCase.getHitsData(page: page, count: 10) ??
                     .just(.success([]))
@@ -61,7 +61,6 @@ final class HomeViewModel: ViewModelBase, Stepper {
             }
         
         let hitsInfo = PublishRelay<Hit>()
-        
         let output = Output(dataSource: dataSource.asDriverComplete(),hitsInfo: hitsInfo, errorHandler: errorHandler.asDriverComplete())
         
         _ = input.cellSelect
