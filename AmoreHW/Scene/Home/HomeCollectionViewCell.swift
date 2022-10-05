@@ -62,13 +62,13 @@ fileprivate extension HomeCollectionViewCell {
         cellUpdate.bind { type in
             switch type {
             case .select:
-                UIView.animate(withDuration: 0.1,
+                UIView.animate(withDuration: 0.3,
                                animations: {
                     self.baseView.alpha = 1.0
                 })
                 break
             case .deSelect:
-                UIView.animate(withDuration: 0.1,
+                UIView.animate(withDuration: 0.3,
                                animations: {
                     self.baseView.alpha = 0.5
                 })

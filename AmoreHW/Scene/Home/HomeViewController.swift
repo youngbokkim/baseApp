@@ -31,9 +31,20 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     private let cellSelect: PublishRelay<Int> = PublishRelay()
     private let goDetail: PublishRelay<Hit> = PublishRelay()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView()
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityIndicator.center = view.center
+        activityIndicator.color = UIColor.white
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.style = .medium
+        view.addSubview(activityIndicator)
+        activityIndicator.stopAnimating()
+        return activityIndicator
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupCommon()
         fetchHisData.accept(Int(1))
     }
@@ -44,7 +55,6 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     
     func configurationUI() {
         initView()
-        
         startNextPageLoop()
     }
     
@@ -64,10 +74,10 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
             if index == 0 && self.currentIndex == 0 {
                 self.cellSelect.accept(0)
             }
+            self.activityIndicator.stopAnimating()
         }.disposed(by: disposeBag)
         
         output.errorHandler.asObservable().bind(onNext: { error in
-            print("error = \(error)")
             self.showErrorMsg(error: error)
         }).disposed(by: disposeBag)
         
@@ -99,7 +109,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController : UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.timer?.invalidate()
+        timer?.invalidate()
     }
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
@@ -141,12 +151,12 @@ extension HomeViewController : UIScrollViewDelegate {
 
 fileprivate extension HomeViewController {
     func initView() {
-        self.title = viewModel.title
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = UIColor.init(red: 66, green: 74, blue: 123)
             appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         self.navigationController?.navigationBar.standardAppearance = appearance
         self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        self.title = viewModel.title
         
         let cellWidth = constCellWidth
         let cellHeight = constCellHeight
@@ -161,23 +171,24 @@ fileprivate extension HomeViewController {
     }
     
     func startNextPageLoop() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
             self.moveNextPage()
         }
     }
     
     func moveNextPage() {
-        print("idx = \(currentIndex) max = \(viewModel.getMaxLength())")
-        
         guard viewModel.getMaxLength() > Int(currentIndex) else { return }
         currentIndex += 1
         collectionView.scrollToItem(at: NSIndexPath(item: Int(currentIndex), section: 0) as IndexPath, at: .right, animated: true)
-        cellSelect.accept(Int(currentIndex))
     }
     
     func cellUpdate(){
-        if viewModel.getMaxLength() - 2 == Int(currentIndex) {
+        if viewModel.getMaxLength() == Int(currentIndex + 1) {
+            activityIndicator.startAnimating()
             fetchHisData.accept(viewModel.getMaxLength() + 1)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                self?.cellSelect.accept(Int(self!.currentIndex))
+            }
         } else {
             cellSelect.accept(Int(currentIndex))
         }
@@ -185,7 +196,7 @@ fileprivate extension HomeViewController {
     }
     
     func showErrorMsg(error: Error) {
-        let vc = UIAlertController.init(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        let vc = UIAlertController.init(title: "에러", message: error.localizedDescription, preferredStyle: .alert)
         let confirm = UIAlertAction.init(title: "확인", style: .cancel)
         vc.addAction(confirm)
         self.present(vc, animated: true)
