@@ -182,8 +182,8 @@ fileprivate extension HomeViewController {
     }
     
     func startNextPageLoop() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
-            self.moveNextPage()
+        self.timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in
+            self?.moveNextPage()
         }
     }
     
