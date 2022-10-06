@@ -18,6 +18,7 @@ struct SearchRequest: APIRequest {
         self.parameters = parameters
     }
 }
+
 final class NetworkRepository: NetworkRepoInf {
     private let networkSvc: NetwokSvcInf
     private let disposeBag = DisposeBag()

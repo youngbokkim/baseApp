@@ -11,6 +11,7 @@ import RxSwift
 enum ImageLoaderError: Error {
     case failed
 }
+
 final class ImageLoader {
     private var cache = NSCache<AnyObject, AnyObject>()
     private static var imageLoader: ImageLoader = {

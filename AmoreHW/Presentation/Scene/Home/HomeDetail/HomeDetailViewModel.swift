@@ -35,7 +35,9 @@ final class HomeDetailViewModel: ViewModelBase, ImageLoadViewModelBase, Stepper 
         let hitInfo = PublishRelay<Hit>()
         let output = Output(hitInfo: hitInfo)
         
-        input.viewLoad.subscribe { _ in
+        input.viewLoad.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            
             output.hitInfo.accept(self.hitInfo)
         }.disposed(by: disposeBag)
         

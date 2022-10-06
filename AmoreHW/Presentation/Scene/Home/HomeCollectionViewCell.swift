@@ -58,7 +58,9 @@ fileprivate extension HomeCollectionViewCell {
         else { return }
  
         viewModel.bind(output: cellUpdate)
-        cellUpdate.bind { type in
+        cellUpdate.bind { [weak self] type in
+            guard let self = self else { return }
+            
             switch type {
             case .select:
                 UIView.animate(withDuration: 0.3,

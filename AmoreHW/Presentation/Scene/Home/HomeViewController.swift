@@ -18,7 +18,6 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
     private let constCellWidth = 250.0
     private let constCellHeight = 330.0
     private var currentIndex: CGFloat = 0.0
-    private let lineSpacing: CGFloat = 0.0
     private var timerPause: Bool = false
     private var timer: Timer?
     
@@ -76,7 +75,8 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
         let output = viewModel.transform(input: input)
         output.dataSource.asObservable().bind(to: collectionView.rx
             .items(cellIdentifier: "HomeCollectionViewCell",
-                   cellType: HomeCollectionViewCell.self)) { index, data, cell in
+                   cellType: HomeCollectionViewCell.self)) { [weak self] (index, data, cell) in
+            guard let self = self else { return }
             
             cell.viewModel = HomeCollectionViewCellViewModel(idx: index, hitInfo: data, updateCell: self.cellSelect.asObservable())
             
@@ -86,11 +86,16 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
             self.activityIndicator.stopAnimating()
         }.disposed(by: disposeBag)
         
-        output.errorHandler.asObservable().bind(onNext: { error in
+        output.errorHandler.asObservable().bind(onNext: { [weak self] error in
+            guard let self = self else { return }
+            
             self.showErrorMsg(error: error)
+            self.timer?.invalidate()
         }).disposed(by: disposeBag)
         
-       _ = output.hitsInfo.bind { hit in
+       _ = output.hitsInfo.bind { [weak self] hit in
+            guard let self = self else { return }
+           
             self.titleLabel.text = "\(hit.type)"
             self.subTitleLabel.text = "\(hit.tags)"
         }
@@ -100,9 +105,8 @@ final class HomeViewController: UIViewController, StoryboardBased, ViewBase {
         collectionView
             .rx
             .modelSelected(Hit.self)
-            .subscribe(onNext: { (model) in
-                print("\(model)")
-                self.goDetail.accept(model)
+            .subscribe(onNext: { [weak self] (model) in
+                self?.goDetail.accept(model)
             }).disposed(by: disposeBag)
     }
 }
@@ -126,9 +130,9 @@ extension HomeViewController : UIScrollViewDelegate {
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        let cellWidthIncludingSpacing = layout.itemSize.width + layout.minimumLineSpacing
+        let cellWidth = layout.itemSize.width
         var offset = targetContentOffset.pointee
-        let index = (offset.x + scrollView.contentInset.left) / cellWidthIncludingSpacing
+        let index = (offset.x + scrollView.contentInset.left) / cellWidth
         var roundedIndex = round(index)
         
         if scrollView.contentOffset.x > targetContentOffset.pointee.x {
@@ -147,7 +151,7 @@ extension HomeViewController : UIScrollViewDelegate {
             roundedIndex = currentIndex
         }
         
-        offset = CGPoint(x: roundedIndex * cellWidthIncludingSpacing - scrollView.contentInset.left, y: -scrollView.contentInset.top)
+        offset = CGPoint(x: roundedIndex * cellWidth - scrollView.contentInset.left, y: -scrollView.contentInset.top)
         targetContentOffset.pointee = offset
     }
     
@@ -170,7 +174,7 @@ fileprivate extension HomeViewController {
         let insetX = (view.bounds.width - cellWidth) / 2.0
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: cellWidth, height: cellHeight)
-        layout.minimumLineSpacing = lineSpacing
+        layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
         collectionView.contentInset = UIEdgeInsets(top: 0, left: insetX, bottom: 0, right: insetX)
         collectionView.rx.setDelegate(self).disposed(by: disposeBag)
@@ -178,7 +182,7 @@ fileprivate extension HomeViewController {
     }
     
     func startNextPageLoop() {
-        self.timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in
+        self.timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
             self.moveNextPage()
         }
     }

@@ -11,6 +11,7 @@ public enum RequestType: String {
     case get
     case post
 }
+
 protocol APIRequest {
     var method: RequestType { get }
     var endPoint: String { get }

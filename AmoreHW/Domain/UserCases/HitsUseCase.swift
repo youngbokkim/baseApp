@@ -35,6 +35,7 @@ final class HitsUseCase: HitsUseCaseInf {
         }
     }
 }
+
 fileprivate extension HitsUseCase {
     func makeSearchHeader() -> [String: String] {
         return ["application/json": "Accept"]
